@@ -2,7 +2,7 @@
 
 [https://overthewire.org/wargames/bandit/](https://overthewire.org/wargames/bandit/)
 
-ssh bandit7@bandit.labs.overthewire.org -p 2220
+ssh bandit17@bandit.labs.overthewire.org -p 2220
 
 # Soluzioni - hint
 ## #11
@@ -38,4 +38,19 @@ openssl s_client -connect localhost:30001
 
 ## #16
 (BOH)
-openssl s_client -connect localhost:31790 -tls1_3
+```bash
+# Find the correct port:
+
+# 1. List all ports
+nmap localhost -p 31000-32000 -Pn | grep ^[[:digit:]] | grep open | awk '{print $1}' | sed 's/\/tcp//'
+
+# 2. Try to connect to each port and execute:
+echo "currentLevelPWD" | openssl s_client -connect "localhost:31790" -ign_eof
+
+# When you have found the port, if the password is correct, you'll be returned a private key.
+# You'll need that key to access levl 17.
+# Access level 17 with:
+# chmod 400 passwords/17.privkey
+# ssh bandit17@bandit.labs.overthewire.org -p 2220 -i passwords/17.privkey
+```
+
